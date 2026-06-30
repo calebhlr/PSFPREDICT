@@ -20,7 +20,7 @@ export const matchStatusEnum = pgEnum("match_status", [
   "cancelled",
 ]);
 
-export const predictionOutcomeEnum = pgEnum("prediction_outcome", ["exact", "result", "miss", "pending"]);
+export const predictionOutcomeEnum = pgEnum("prediction_outcome", ["exact", "miss", "pending"]);
 
 export const feedEventTypeEnum = pgEnum("feed_event_type", [
   "exact_score",

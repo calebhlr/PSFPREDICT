@@ -4,7 +4,7 @@ Esta fase conecta o resultado oficial das partidas ao núcleo competitivo do PSF
 
 ## Incluído
 
-- Serviço de pontuação V1 com placar exato, resultado correto e erro.
+- Serviço de pontuação V1 com 1 ponto apenas para placar exato e 0 para qualquer outro palpite.
 - Recalcular pontos de todos os palpites de uma partida encerrada.
 - Recalcular ranking global com desempate por placares exatos.
 - Persistir snapshots de ranking com posição anterior para cálculo de tendência.

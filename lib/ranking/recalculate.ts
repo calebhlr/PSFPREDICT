@@ -57,7 +57,7 @@ export async function recalculateRanking(): Promise<RankingRow[]> {
 
   const rows = activeParticipants.map((participant) => {
     const participantPredictions = allPredictions.filter((prediction) => prediction.participantId === participant.id);
-    const scoredPredictions = participantPredictions.filter((prediction) => prediction.outcome === "exact" || prediction.outcome === "result").length;
+    const exactPredictions = participantPredictions.filter((prediction) => prediction.outcome === "exact").length;
 
     return {
       participantId: participant.id,
@@ -65,7 +65,7 @@ export async function recalculateRanking(): Promise<RankingRow[]> {
       previousPosition: previousRanking.get(participant.id)?.position ?? null,
       totalPoints: participantPredictions.reduce((total, prediction) => total + prediction.points, 0),
       exactScores: participantPredictions.filter((prediction) => prediction.outcome === "exact").length,
-      hitRate: calculateHitRate(scoredPredictions, participantPredictions.length),
+      hitRate: calculateHitRate(exactPredictions, participantPredictions.length),
     };
   }).sort((a, b) => {
     if (b.totalPoints !== a.totalPoints) return b.totalPoints - a.totalPoints;

@@ -51,7 +51,7 @@ export async function generatePostMatchFeedEvents(matchId: string, rankingRows: 
     await db.insert(feedEvents).values({
       type: "exact_score",
       title: `${participant?.name ?? "Um participante"} acertou sozinho ${matchLabel}`,
-      body: `Cravou ${prediction.homeScore}×${prediction.awayScore} e somou 10 pontos.`,
+      body: `Cravou ${prediction.homeScore}×${prediction.awayScore} e somou 1 ponto.`,
       matchId,
       participantId: prediction.participantId,
       metadata: { homeScore: prediction.homeScore, awayScore: prediction.awayScore },
