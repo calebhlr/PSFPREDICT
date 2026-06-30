@@ -6,6 +6,7 @@ import { apiFootballClient } from "@/lib/api-football/client";
 import { mapFixtureStatus } from "@/lib/api-football/mappers";
 import { db } from "@/lib/db";
 import { matches } from "@/lib/db/schema";
+import { recalculateFinishedMatches, recalculateMatchScore } from "@/lib/ranking/recalculate";
 
 export async function getSyncStatus() {
   if (!db) {
@@ -37,8 +38,10 @@ export async function forceFixtureResync(formData: FormData) {
   const fixture = response.response[0];
   if (!fixture) return;
 
-  await db.update(matches).set({
-    status: mapFixtureStatus(fixture.fixture.status.short),
+  const status = mapFixtureStatus(fixture.fixture.status.short);
+
+  const [match] = await db.update(matches).set({
+    status,
     kickoffAt: new Date(fixture.fixture.date),
     venueName: fixture.fixture.venue?.name ?? null,
     round: fixture.league.round ?? null,
@@ -47,12 +50,18 @@ export async function forceFixtureResync(formData: FormData) {
     rawPayload: fixture,
     syncedAt: new Date(),
     updatedAt: new Date(),
-  }).where(eq(matches.apiFootballFixtureId, fixtureId));
+  }).where(eq(matches.apiFootballFixtureId, fixtureId)).returning();
+
+  if (match && status === "finished") {
+    await recalculateMatchScore(match.id);
+  }
 
   revalidatePath("/admin/sync");
 }
 
 export async function forceRankingRecalculation() {
+  await recalculateFinishedMatches();
   revalidatePath("/ranking");
   revalidatePath("/admin/dashboard");
+  revalidatePath("/admin/sync");
 }
